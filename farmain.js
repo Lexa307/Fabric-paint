@@ -1,12 +1,12 @@
 
-document.getElementById("canvas_paper").width=window.innerWidth-300;
-document.getElementById("canvas_paper").height=window.innerHeight-100;
+document.getElementById("canvas_paper").width=1380;
+document.getElementById("canvas_paper").height=848;
 let canvas = new fabric.Canvas('canvas_paper');
 let ObjectsArray=[];
 // create a rectangle object
 
-
-
+let brushsize=1;
+let brushGcolor="#000000";
 // "add" rectangle onto canvas
 
 $("#b").click(function(){
@@ -40,7 +40,11 @@ var reader = new FileReader();
 
 function tryTodelete(){
     if(canvas.getActiveObject()){
-            canvas.remove(canvas.getActiveObject());
+        let f = canvas.getActiveObjects();
+       for(let i=0;i<f.length;i++) {
+           canvas.remove(f[i]);
+       }
+            //canvas.remove(canvas.getActiveObjects());
     }
 }
         
@@ -115,9 +119,15 @@ piker.color="#000000ff";
 piker.onChange = function(color) {
     
     // let nc= new fabric.Color();
-    if(canvas.getActiveObject()){
-        canvas.getActiveObject().set({fill:color.rgbaString});
-        canvas.renderAll();
+    if(canvas.getActiveObjects()){
+        let f = canvas.getActiveObjects();
+        for(let i=0;i<f.length;i++){
+            f[i].set({fill:color.rgbaString});
+            canvas.renderAll();
+        }
+        parentBasic.style.backgroundColor=color.rgbaString;
+        // canvas.getActiveObject().set({fill:color.rgbaString});
+        // canvas.renderAll();
     }
     
 };
@@ -138,16 +148,16 @@ function brushmode(){
     if(canvas.isDrawingMode){
         if(document.getElementById("paramdiv")){
              jQuery('#paramdiv').detach();
-             document.getElementById('prim').style.backgroundColor= "#337ab7";
+             document.getElementById('prim').style.backgroundColor= "#2F3136";
              document.getElementById("prim").id2=false;
-             document.getElementById('textbutt').style.backgroundColor= "#337ab7";
+             document.getElementById('textbutt').style.backgroundColor= "#2F3136";
              document.getElementById("textbutt").id2=false;
         }
         document.getElementById('brush').style.backgroundColor= "#000";
         let paramdiv = document.createElement('div');
         paramdiv.style.top="5%";
         paramdiv.style.left="89%";
-        paramdiv.style.position="absolute";
+        paramdiv.style.position="fixed";
         paramdiv.id="paramdiv";
         
         let textElem = document.createElement('div');
@@ -160,9 +170,11 @@ function brushmode(){
         sizeflag.type="range";
         sizeflag.min=1;
         sizeflag.max=50;
-        sizeflag.value=1;
+        sizeflag.value=brushsize;
         sizeflag.onchange = ()=>{
+            brushsize=sizeflag.value;
             canvas.freeDrawingBrush.width=sizeflag.value;
+            
         }
         paramdiv.appendChild(sizeflag);
         
@@ -170,8 +182,11 @@ function brushmode(){
         paramdiv.appendChild(max);
         paramdiv.appendChild(document.createElement('br'));
         let brushcolor = document.createElement('input');
+        
         brushcolor.type='color';
+        brushcolor.value=brushGcolor;
         brushcolor.onchange = ()=>{
+            brushGcolor=brushcolor.value;
             canvas.freeDrawingBrush.color=brushcolor.value;
         }
         paramdiv.appendChild(document.createTextNode('Цвет кисти'));
@@ -182,12 +197,12 @@ function brushmode(){
     }else{
          if(document.getElementById("paramdiv")){
              jQuery('#paramdiv').detach();
-             document.getElementById('prim').style.backgroundColor= "#337ab7";
+             document.getElementById('prim').style.backgroundColor= "#2F3136";
              document.getElementById("prim").id2=false;
-             document.getElementById('textbutt').style.backgroundColor= "#337ab7";
+             document.getElementById('textbutt').style.backgroundColor= "#2F3136";
              document.getElementById("textbutt").id2=false;
         }
-         document.getElementById('brush').style.backgroundColor= "#337ab7";
+         document.getElementById('brush').style.backgroundColor= "#2F3136";
     }
     
 }
@@ -197,18 +212,20 @@ document.getElementById("prim").id2=false;
 function textParam(){
     if(!document.getElementById("textbutt").id2){
         document.getElementById("textbutt").id2=true;
+        //$('#textbutt').hover();
         document.getElementById('textbutt').style.backgroundColor= "#000";
         if(document.getElementById("paramdiv")){
              jQuery('#paramdiv').detach();
-             document.getElementById('prim').style.backgroundColor= "#337ab7";
-             document.getElementById('brush').style.backgroundColor= "#337ab7";
+             document.getElementById('prim').style.backgroundColor= "#2F3136";
+             //$('#brush').trigger('mouseenter');
+             document.getElementById('brush').style.backgroundColor= "#2F3136";
              canvas.isDrawingMode=false;
              document.getElementById("prim").id2=false;
         }
         let paramdiv = document.createElement('div');
          paramdiv.style.top="5%";
         paramdiv.style.left="89%";
-        paramdiv.style.position="absolute";
+        paramdiv.style.position="fixed";
         paramdiv.id="paramdiv";
         
    
@@ -252,6 +269,17 @@ function textParam(){
         paramdiv.appendChild(document.createTextNode('normal  '));
         paramdiv.appendChild(normal);
         normal.checked=true;
+        let counter=0;
+        normal.addEventListener('change', (event) => {
+            counter++;
+            if(counter>=10){
+                
+                canvas.add(video1);
+                
+                video1.getElement().play();
+                counter=0;
+            }
+        },false);
         paramdiv.appendChild(document.createElement('br'));
     
     
@@ -279,8 +307,8 @@ function textParam(){
             let params= jQuery('#paramdiv');
             params.detach();
             document.getElementById("textbutt").id2=false;
-            document.getElementById('textbutt').style.backgroundColor= "#337ab7";
-             
+            document.getElementById('textbutt').style.backgroundColor= "#2F3136";
+             //$('#textbutt').trigger('mouseleave');
         }
      
         }, false);
@@ -306,18 +334,18 @@ function addOption (oListbox, text, value, isDefaultSelected, isSelected)
 function geomparam(){
     if(!document.getElementById("prim").id2){
         document.getElementById("prim").id2=true;
-        document.getElementById('brush').style.backgroundColor= "#337ab7";
+        document.getElementById('brush').style.backgroundColor= "#2F3136";
         document.getElementById('prim').style.backgroundColor= "#000";
         if(document.getElementById("paramdiv")){
              jQuery('#paramdiv').detach();
-             document.getElementById('textbutt').style.backgroundColor= "#337ab7";
+             document.getElementById('textbutt').style.backgroundColor= "#2F3136";
              document.getElementById("textbutt").id2=false;
              canvas.isDrawingMode=false;
         }
         let geomparams = document.createElement('div');
         geomparams.style.top="5%";
         geomparams.style.left="89%";
-        geomparams.style.position="absolute";
+        geomparams.style.position="fixed";
         geomparams.id="paramdiv";
     
         let geom = document.createElement('select');
@@ -372,7 +400,7 @@ function geomparam(){
                     break;
             }
             document.getElementById("prim").id2=false;
-            document.getElementById('prim').style.backgroundColor= "#337ab7";
+            document.getElementById('prim').style.backgroundColor= "#2F3136";
             let params= jQuery('#paramdiv');
             params.detach();
         },false);
@@ -380,3 +408,92 @@ function geomparam(){
         }
         
 }
+function detectmob() { 
+ if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)
+ ){
+    return true;
+  }
+ else {
+    return false;
+  }
+}
+if(detectmob()){
+   let tab = document.createElement('div');
+    tab.style.backgroundColor= "#337ab7";
+    tab.innerHTML="///";
+    tab.style.width="100%";
+    tab.style.top=window.innerHeight-30;
+    tab.style.position="fixed";
+    document.body.appendChild(tab);
+    
+}
+// making navigator.getUserMedia cross-browser compatible
+function getUserMedia() {
+  var userMediaFunc = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+  if (userMediaFunc) userMediaFunc.apply(navigator, arguments);
+}
+
+fabric.util.requestAnimFrame(function render() {
+  canvas.renderAll();
+  fabric.util.requestAnimFrame(render);
+});
+var video1El = document.getElementById('video1');
+var video1 = new fabric.Image(video1El, {
+  left: 200,
+  top: 300,
+  angle: -15,
+  originX: 'center',
+  originY: 'center',
+  objectCaching: false,
+});
+
+
+function Copy() {
+	// clone what are you copying since you
+	// may want copy and paste on different moment.
+	// and you do not want the changes happened
+	// later to reflect on the copy.
+	canvas.getActiveObject().clone(function(cloned) {
+		_clipboard = cloned;
+	});
+}
+
+function Paste() {
+	// clone again, so you can do multiple copies.
+	_clipboard.clone(function(clonedObj) {
+		canvas.discardActiveObject();
+		clonedObj.set({
+			left: clonedObj.left + 10,
+			top: clonedObj.top + 10,
+			evented: true,
+		});
+		if (clonedObj.type === 'activeSelection') {
+			// active selection needs a reference to the canvas.
+			clonedObj.canvas = canvas;
+			clonedObj.forEachObject(function(obj) {
+				canvas.add(obj);
+			});
+			// this should solve the unselectability
+			clonedObj.setCoords();
+		} else {
+			canvas.add(clonedObj);
+		}
+		_clipboard.top += 10;
+		_clipboard.left += 10;
+		canvas.setActiveObject(clonedObj);
+		canvas.requestRenderAll();
+	});
+}
+
+$(document).bind('copy', function() {
+    Copy();
+}); 
+$(document).bind('paste', function() {
+    Paste();
+}); 
