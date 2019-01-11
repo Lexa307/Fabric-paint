@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8' name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        
+        <style type="text/css">
+            .inputtype{
+                position:absolute;
+                height: 70px;
+                overflow: hidden;
+                color: #000;
+                width: 100px;
+                font-size: 14px;
+            }
+            .paper{
+                border: 1px solid;
+                margin:0px 100px 0px;
+            }
+           
+            
+            
+            .left,
+    .right {
+        top: 0%;
+        float: left;
+        /*transform: translateY(125%);*/
+    }
+    body{
+        background-color:#36393E;
+    }
+
+    .left {
+        background: #2F3136;
+        display: inline-block;
+        white-space: nowrap;
+        width: 100px;
+        transition: width .5s;
+        position: fixed;
+    }
+
+    .right {
+        background: #fff;
+        width: 350px;
+        transition: width 1s;
+        border-style: solid;
+        border-color: #ccc;
+        border-width: 1px;
+    }
+
+    
+
+    .item:hover {
+        background-color: #222 !important;
+    }
+
+    .left .fas {
+        /*margin: 15px;*/
+        width: 20px;
+        color: #fff;
+        
+    }
+    #paramdiv{
+        color:#fff;
+        float: right;
+    }
+
+    i.fas {
+        font-size: 17px;
+        /*vertical-align: middle !important;*/
+    }
+
+    .item {
+        height: 70px;
+        overflow: hidden;
+        color: #fff;
+        position: relative;
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;  
+        cursor: pointer;
+    }
+    /*.item input[type="file"]{*/
+    /*     opacity:0; */
+    /*     transform: scale(10);*/
+    /*     position: relative;*/
+    /*}*/
+    .file_upload{
+    position: relative;
+    overflow: hidden;
+    font-size: 1em;        /* example */
+    height: 2em;           /* example */
+    line-height: 2em       /* the same as height */
+}
+.file_upload input[type=file]{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform: scale(20);
+    letter-spacing: 10em;     /* IE 9 fix */
+    -ms-transform: scale(20); /* IE 9 fix */
+    opacity: 0;
+    cursor: pointer
+}
+
+.file_upload > button{
+    float: right;
+    width: 8em;            /* example */
+    height: 100%;
+}
+.file_upload > div{
+    padding-left: 1em  ;    /* example */
+    position: fixed;
+}
+
+#colortype{
+    
+    position: fixed;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: .5em 1em;
+    min-height: 2em;
+    border: none;
+    outline: none;
+    overflow: visible;
+    
+    background-color: dodgerblue;
+    color: white;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none; 
+
+    font-family: sans-serif;
+    text-align: center;
+    cursor: pointer;
+}
+.octo{
+    transform: scale(0.1);
+    
+    
+}
+
+
+
+        </style>
+    </head>
+    <body>
+        <video height="720" width="1280" src="sorry.mp4" id="video1" style="display: none"  class="canvas-img">
+          <source src="sorry.mp4">
+          
+        </video>
+        <canvas class="paper"  id="canvas_paper"></canvas>
+        <script src="https://unpkg.com/vanilla-picker@2"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="fabric.min.js"></script>
+        <script src="FileSaver.js"></script>
+        <script src="canvas-toBlob.js"></script>
+        <div class="left">
+    <div class="item" onclick="textParam()" id="textbutt">
+        <i class="fas fa-fw fa-bars"></i>Текст
+    </div>
+    <div class="item active" id="brush" onclick="brushmode()" >
+        <i class="fas fa-fw fa-map-marked-alt"  ></i> Кисть
+    </div>
+    <div class="item" onclick="geomparam()" id="prim">
+        <i class="fas fa-fw fa-columns"></i> Примитивы
+    </div>
+    <div class="item" >
+        <div class="file_upload">
+            <button type="button">Загрузить</button>
+            <div></div>
+            <input type="file" id="imgLoader">
+        </div>
+         
+    </div>
+    <div class="item">
+        <i class="fas fa-fw fa-user-circle"></i> <input class="inputtype" type="button" value="Сохранить" id="b"/>
+    </div>
+    
+         <div id="colortype" class="inputtype"   >Цвет</div>
+    
+</div>
+    
+        <script type="text/javascript" src="farmain.js"></script>
+        <a href="https://github.com/Lexa307/Fabric-paint"> <img class="octo" src="Octocat.png"></img>GitHub repository</a>
+    </body>
+</html>
